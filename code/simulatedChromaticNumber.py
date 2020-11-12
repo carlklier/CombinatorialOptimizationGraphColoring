@@ -12,8 +12,11 @@ from dimod import ExactSolver
 #provinces = ['1', '2', '3']
 #neighbors = [('1', '2'), ('1', '3'), ('2', '3')]
 
-provinces = ['1', '2', '3', '4']
-neighbors = [('1', '2'), ('1', '3'), ('1', '4'), ('2', '3'), ('2', '4'), ('3', '4')]
+# provinces = ['1', '2', '3', '4']
+# neighbors = [('1', '2'), ('1', '3'), ('2', '3'), ('3', '4')]
+
+provinces = ['a', 'b', 'c', 'd']
+neighbors = [('a', 'b'), ('a', 'c'), ('b', 'c'), ('c', 'd')]
 
 # Function for the constraint that two nodes with a shared edge not both select one color
 def not_both_1(v, u):
@@ -45,18 +48,25 @@ def generate_color_configurations(n):
     color_configurations.append(tuple(color))
   return color_configurations
 
+def find_max_degree(G):
+  max = 0
+  for node in list(G.nodes):
+    if G.degree[node] > max:
+      max = G.degree[node]
+  return max  
+
 G = nx.Graph()
 G.add_nodes_from(provinces)
 G.add_edges_from(neighbors)
-max_chromatic_num = max(G.degree)[1] + 1
+max_chromatic_num = find_max_degree(G) + 1
 chromatic_num = 0
 if(len(provinces)==0):
   print("Chromatic number is %" %chromatic_num)
-  sys.exit(0)
+  sys.exit()
 elif(len(provinces) == 1):
   chromatic_num = 1
   print("Chromatic number is %" %chromatic_num)
-  sys.exit(0)
+  sys.exit()
 else:
   print("Graph has more than 1 node, chromatic number cannot be 0 or 1.")
   chromatic_num = 2
@@ -97,4 +107,5 @@ while(chromatic_num <= max_chromatic_num):
       print("Sample: ", sample)
       print("Found a %s-coloring for this graph." % chromatic_num)
       plot_map(sample, G)
+      sys.exit()
   chromatic_num = chromatic_num + 1

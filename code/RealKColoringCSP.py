@@ -100,8 +100,6 @@ for neighbor in neighbors:
 # Convert the binary constraint satisfaction problem to a binary quadratic model
 bqm = dwavebinarycsp.stitch(csp)
 
-#sampler = ExactSolver()
-#sampleset = sampler.sample(bqm)
 sampler = EmbeddingComposite(DWaveSampler())
 sampleset = sampler.sample(bqm, num_reads=2000)
 records = sampleset.record

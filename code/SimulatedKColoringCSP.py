@@ -1,5 +1,5 @@
 #%%
-# This code comes from https://docs.ocean.dwavesys.com/en/latest/examples/map_coloring.html
+# Part of this code comes from https://docs.ocean.dwavesys.com/en/latest/examples/map_coloring.html
 import dwavebinarycsp
 from dwave.system import DWaveSampler, EmbeddingComposite
 import networkx as nx
@@ -12,8 +12,8 @@ from dimod import ExactSolver
 # provinces = ['1', '2', '3', '4']
 # neighbors = [('1', '2'), ('1', '3'), ('1', '4'), ('2', '3'), ('2', '4'), ('3', '4')]
 
-provinces = ['a', 'b', 'c']
-neighbors = [('a', 'b'), ('a', 'c'), ('b', 'c')]
+provinces = ['a', 'b', 'c', 'd']
+neighbors = [('a', 'b'), ('a', 'c'), ('b', 'c'), ('c', 'd')]
 
 # Function for the constraint that two nodes with a shared edge not both select one color
 def not_both_1(v, u):
@@ -70,14 +70,11 @@ def convert_sample_to_colors(samples):
   return colorCoded
 
 def create_variable_dict(variables, sample):
-  print("sample inside create_variable_dict: ", sample)
   new_sample = {}
   i = 0
   for variable in variables:
-    print("This is sample[i]: ", sample[i])
     new_sample[variable] = sample[i]
     i = i + 1
-  print("new sample inside create_variable_dict:  ", new_sample)
   return new_sample  
 
 # Valid configurations for the constraint that each node select a single color
@@ -112,6 +109,7 @@ print("printing info: ", sampleset.info)
 print("printing labels: ", sampleset.variables)
 print("length of records: ", len(records))
 
+# Plotting all the engery values returned from sampling to get a sense of the variance
 plt.figure(figsize=(40, 40))
 bargraph = plt.bar(np.arange(len(records)), records['energy'], align='center')
 plt.xlabel('Colorings', fontsize=30)
@@ -120,9 +118,9 @@ plt.xticks(fontsize=30)
 plt.yticks(fontsize=30)
 plt.show()
 
-
-print("Printing keys: ", records[0].dtype)
-print("Printing records: ", records[:15])
+# Plotting the 15 lowest energy values labeled with the sample output
+print("Printing records: ")
+print(records[:15])
 plt.figure(figsize=(40, 40))
 bargraph = plt.bar(np.arange(len(records[:15])), records[:15]['energy'], align='center')
 plt.xticks(np.arange(len(records[:15])), records[:15]['sample'])
@@ -132,6 +130,7 @@ plt.xticks(fontsize=30, rotation=70)
 plt.yticks(fontsize=30)
 plt.show()
 
+# Ploting the 15 lowest energy values labeled with RGB Colors
 colorCodedTicks = convert_sample_to_colors(records[:15]['sample'])
 plt.figure(figsize=(40, 40))
 bargraph = plt.bar(np.arange(len(records[:15])), records[:15]['energy'], align='center')
@@ -142,14 +141,10 @@ plt.xticks(fontsize=30, rotation=70)
 plt.yticks(fontsize=30)
 plt.show()
 
-
-# Plot the lowest-energy sample if it meets the constraints
 for sample in records['sample'][:5]:
   new_sample = create_variable_dict(sampleset.variables, sample)
   colored_sample = convert_sample_to_colors([sample])
-  print("This is colored sample: ", colored_sample)
   colors = getColors(colored_sample)
-  print("This is returned colores: ", colors)
   if not csp.check(new_sample):
       print("Sample: ", new_sample)
       plot_map(new_sample, colors)
@@ -157,6 +152,4 @@ for sample in records['sample'][:5]:
   else:
       print("Sample: ", new_sample)
       plot_map(new_sample, colors)
-
-
 #%%

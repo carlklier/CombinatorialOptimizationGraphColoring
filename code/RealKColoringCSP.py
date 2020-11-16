@@ -6,12 +6,6 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 
-from dimod import ExactSolver
-
-# Represent the map as the nodes and edges of a graph
-# provinces = ['1', '2', '3', '4']
-# neighbors = [('1', '2'), ('1', '3'), ('1', '4'), ('2', '3'), ('2', '4'), ('3', '4')]
-
 provinces = ['a', 'b', 'c', 'd']
 neighbors = [('a', 'b'), ('a', 'c'), ('b', 'c'), ('c', 'd')]
 
@@ -38,7 +32,7 @@ def generate_color_configurations(n):
 
 def getColors(colors):
   colors_for_graph = []
-  for c in reversed(colors[0]):
+  for c in colors[0]:
     if c == 'R':
       colors_for_graph.append('Red')
     elif c == 'G':
@@ -101,9 +95,13 @@ for neighbor in neighbors:
 bqm = dwavebinarycsp.stitch(csp)
 
 sampler = EmbeddingComposite(DWaveSampler())
-sampleset = sampler.sample(bqm, num_reads=2000)
+sampleset = sampler.sample(bqm, num_reads=8000)
 records = sampleset.record
 records.sort(order='energy')
+
+records2 = sampleset.record
+np.vstack({tuple(e) for e in records2})
+print('records2 :', records2[:15])
 
 print("printing info: ", sampleset.info)
 print("printing labels: ", sampleset.variables)
@@ -145,11 +143,13 @@ for sample in records['sample'][:5]:
   new_sample = create_variable_dict(sampleset.variables, sample)
   colored_sample = convert_sample_to_colors([sample])
   colors = getColors(colored_sample)
+  reversed_col = reversed(colors)
+  reversed_col_list = list(reversed_col)
   if not csp.check(new_sample):
       print("Sample: ", new_sample)
-      plot_map(new_sample, colors)
+      plot_map(new_sample, reversed_col_list)
       print("Failed to color map")
   else:
       print("Sample: ", new_sample)
-      plot_map(new_sample, colors)
+      plot_map(new_sample, reversed_col_list)
 #%%

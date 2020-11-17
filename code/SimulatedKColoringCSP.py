@@ -1,5 +1,4 @@
 #%%
-# Part of this code comes from https://docs.ocean.dwavesys.com/en/latest/examples/map_coloring.html
 import dwavebinarycsp
 from dwave.system import DWaveSampler, EmbeddingComposite
 import networkx as nx
@@ -11,6 +10,7 @@ provinces = ['a', 'b', 'c', 'd']
 neighbors = [('a', 'b'), ('a', 'c'), ('b', 'c'), ('c', 'd')]
 
 # Function for the constraint that two nodes with a shared edge not both select one color
+# this code comes from https://docs.ocean.dwavesys.com/en/latest/examples/map_coloring.html
 def not_both_1(v, u):
     return not (v and u)
 
@@ -83,7 +83,7 @@ def create_variable_dict(variables, sample):
   return new_sample  
 
 # Valid configurations for the constraint that each node select a single color
-num_colors = 4
+num_colors = 3
 one_color_configurations = generate_color_configurations(num_colors)
 print("One way color configurations: ", one_color_configurations)
 
@@ -91,11 +91,13 @@ print("One way color configurations: ", one_color_configurations)
 csp = dwavebinarycsp.ConstraintSatisfactionProblem(dwavebinarycsp.BINARY)
 
 # Add constraint that each node (province) select a single color
+# this code comes from https://docs.ocean.dwavesys.com/en/latest/examples/map_coloring.html
 for province in provinces:
     variables = [province+str(i) for i in range(num_colors)]
     csp.add_constraint(one_color_configurations, variables)
 
 # Add constraint that each pair of nodes with a shared edge not both select one color
+# this code comes from https://docs.ocean.dwavesys.com/en/latest/examples/map_coloring.html
 for neighbor in neighbors:
     v, u = neighbor
     for i in range(num_colors):
@@ -114,6 +116,7 @@ print("printing info: ", sampleset.info)
 print("printing labels: ", sampleset.variables)
 print("length of records: ", len(records))
 
+num_rec_to_see = 30
 # Plotting all the engery values returned from sampling to get a sense of the variance
 plt.figure(figsize=(40, 40))
 bargraph = plt.bar(np.arange(len(records)), records['energy'], align='center')
@@ -125,34 +128,45 @@ plt.show()
 
 # Plotting the 15 lowest energy values labeled with the sample output
 print("Printing records: ")
-print(records[:15])
+print(records[:num_rec_to_see])
 plt.figure(figsize=(40, 40))
-bargraph = plt.bar(np.arange(len(records[:15])), records[:15]['energy'], align='center')
-plt.xticks(np.arange(len(records[:15])), records[:15]['sample'])
+bargraph = plt.bar(np.arange(len(records[:num_rec_to_see])), records[:num_rec_to_see]['energy'], align='center')
+plt.xticks(np.arange(len(records[:num_rec_to_see])), records[:num_rec_to_see]['sample'])
 plt.xlabel('Colorings', fontsize=30)
 plt.ylabel('Energy Value', fontsize=30)
 plt.xticks(fontsize=30, rotation=70)
 plt.yticks(fontsize=30)
+ax = plt.gca()
+ax.yaxis.offsetText.set_fontsize(30)
 plt.show()
 
 # Ploting the 15 lowest energy values labeled with RGB Colors
-colorCodedTicks = convert_sample_to_colors(records[:15]['sample'], num_colors)
+colorCodedTicks = convert_sample_to_colors(records[:num_rec_to_see]['sample'], num_colors)
 plt.figure(figsize=(40, 40))
-bargraph = plt.bar(np.arange(len(records[:15])), records[:15]['energy'], align='center')
-plt.xticks(np.arange(len(records[:15])), colorCodedTicks)
+bargraph = plt.bar(np.arange(len(records[:num_rec_to_see])), records[:num_rec_to_see]['energy'], align='center')
+plt.xticks(np.arange(len(records[:num_rec_to_see])), colorCodedTicks)
 plt.xlabel('Colorings', fontsize=30)
 plt.ylabel('Energy Value', fontsize=30)
 plt.xticks(fontsize=30, rotation=70)
 plt.yticks(fontsize=30)
+ax = plt.gca()
+ax.yaxis.offsetText.set_fontsize(30)
 plt.show()
 
-for sample in records['sample'][:15]:
+for record in records[:num_rec_to_see]:
+  sample = record['sample']
+  energy = record['energy']
   new_sample = create_variable_dict(sampleset.variables, sample)
   colored_sample = convert_sample_to_colors([sample], num_colors)
   colors = getColors(colored_sample)
   if not csp.check(new_sample):
+      #plot_map(new_sample, colors)
+      print("Sample: ", new_sample)
+      print("Energy Value: ", energy)
+      print("Failed to color graph validly")
       plot_map(new_sample, colors)
-      print("Failed to color map")
   else:
+      print("Sample: ", new_sample)
+      print("Energy Value: ", energy)
       plot_map(new_sample, colors)
 #%%

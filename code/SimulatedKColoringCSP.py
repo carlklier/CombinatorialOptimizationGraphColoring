@@ -16,7 +16,6 @@ def not_both_1(v, u):
 
 # Function that plots a returned sample
 def plot_map(sample, colors):
-    print("Colors inside plot: ", colors)
     G = nx.Graph()
     G.add_nodes_from(provinces)
     G.add_edges_from(neighbors)
@@ -40,12 +39,23 @@ def getColors(colors):
       colors_for_graph.append('Green')
     elif c == 'B':
       colors_for_graph.append('dodgerblue')
+    elif c=='Y':
+      colors_for_graph.append('gold')
     else:
       colors_for_graph.append('Gray')
   return colors_for_graph  
 
-def convert_sample_to_colors(samples):
-  colorMap = {'001': 'R', '010': 'G', '100': 'B'}
+def getColorMap(num_colors):
+  if num_colors == 3:
+    return {'001': 'R', '010': 'G', '100': 'B'}
+  elif num_colors == 4:
+    return {'0001': 'R', '0010': 'G', '0100': 'B', '1000': 'Y'}
+  else:
+    print("Color map for ", num_colors, " not implemented.")
+    sys.exit(1)
+  
+def convert_sample_to_colors(samples, num_colors):
+  colorMap = getColorMap(num_colors)
   colorCoded = []
   for k in samples:
     normal_array = list(k)
@@ -53,14 +63,14 @@ def convert_sample_to_colors(samples):
     colorDigits = ''
     i = 0
     while i < len(k):
-      for digit in normal_array[i:i+3]:
+      for digit in normal_array[i:i+num_colors]:
         colorDigits += str(digit)
       try:
         colors += colorMap[colorDigits]
       except KeyError:
         colors += 'X'
       colorDigits = ''
-      i += 3
+      i += num_colors
     colorCoded.append(colors)
   return colorCoded
 
@@ -73,8 +83,8 @@ def create_variable_dict(variables, sample):
   return new_sample  
 
 # Valid configurations for the constraint that each node select a single color
-colors = 3
-one_color_configurations = generate_color_configurations(colors)
+num_colors = 4
+one_color_configurations = generate_color_configurations(num_colors)
 print("One way color configurations: ", one_color_configurations)
 
 # Create a binary constraint satisfaction problem
@@ -82,13 +92,13 @@ csp = dwavebinarycsp.ConstraintSatisfactionProblem(dwavebinarycsp.BINARY)
 
 # Add constraint that each node (province) select a single color
 for province in provinces:
-    variables = [province+str(i) for i in range(colors)]
+    variables = [province+str(i) for i in range(num_colors)]
     csp.add_constraint(one_color_configurations, variables)
 
 # Add constraint that each pair of nodes with a shared edge not both select one color
 for neighbor in neighbors:
     v, u = neighbor
-    for i in range(colors):
+    for i in range(num_colors):
         variables = [v+str(i), u+str(i)]
         csp.add_constraint(not_both_1, variables)
 
@@ -126,7 +136,7 @@ plt.yticks(fontsize=30)
 plt.show()
 
 # Ploting the 15 lowest energy values labeled with RGB Colors
-colorCodedTicks = convert_sample_to_colors(records[:15]['sample'])
+colorCodedTicks = convert_sample_to_colors(records[:15]['sample'], num_colors)
 plt.figure(figsize=(40, 40))
 bargraph = plt.bar(np.arange(len(records[:15])), records[:15]['energy'], align='center')
 plt.xticks(np.arange(len(records[:15])), colorCodedTicks)
@@ -138,17 +148,11 @@ plt.show()
 
 for sample in records['sample'][:15]:
   new_sample = create_variable_dict(sampleset.variables, sample)
-  colored_sample = convert_sample_to_colors([sample])
+  colored_sample = convert_sample_to_colors([sample], num_colors)
   colors = getColors(colored_sample)
   if not csp.check(new_sample):
-      reversed_col = reversed(colors)
-      reversed_col_list = list(reversed_col)
-      # reverse colors to match the way Nachiket does it for consistency
-      plot_map(new_sample, reversed_col_list)
+      plot_map(new_sample, colors)
       print("Failed to color map")
   else:
-      reversed_col = reversed(colors)
-      reversed_col_list = list(reversed_col)
-      # reverse colors to match the way Nachiket does it for consistency
-      plot_map(new_sample, reversed_col_list)
+      plot_map(new_sample, colors)
 #%%

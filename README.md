@@ -24,7 +24,7 @@
 9. dwave ping
 10. Verify that you get a response from the 'dwave ping' command.
 
-* other packages you will need include networkx, numpy, and matplotlib. These can be installed by running 'pytthon3 -m pip install <package>' with networkx, numpy, and matplotlib inserted for <package>. 
+* other packages you will need include networkx, numpy, and matplotlib. These can be installed by running 'python3 -m pip install 'package'' with networkx, numpy, and matplotlib inserted for 'package'. 
 
 ### Usage
 The easiest way to run the majority of the Dwave annealing code is in a juypter notebook. Those files include: SimulatedKColoringCSP-3colors.ipynb, SimulatedKColoringCSP-4colors.ipynb, RealKColoringCSP-4colors.ipynb, RealKColoringCSP-4colors.ipynb. These files are also provided as python files. The python files will need to be run in an interactive window to view the graph outputs such as VSCode's interactive window with the Microsoft Python extension installed.

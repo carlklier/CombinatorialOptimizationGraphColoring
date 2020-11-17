@@ -1,5 +1,4 @@
 #%%
-# Part of this code comes from https://docs.ocean.dwavesys.com/en/latest/examples/map_coloring.html
 import dwavebinarycsp
 from dwave.system import DWaveSampler, EmbeddingComposite
 import networkx as nx
@@ -29,6 +28,7 @@ neighbors5 = [('a', 'b'), ('a', 'c'), ('b', 'd'), ('c', 'd'), ('b', 'e'), ('e', 
 graph_list = [[provinces1, neighbors1], [provinces2, neighbors2], [provinces3, neighbors3], [provinces4, neighbors4], [provinces5, neighbors5]]
 
 # Function for the constraint that two nodes with a shared edge not both select one color
+# This code comes from https://docs.ocean.dwavesys.com/en/latest/examples/map_coloring.html
 def not_both_1(v, u):
     return not (v and u)
 
@@ -51,11 +51,13 @@ for i in range(graphs):
   csp = dwavebinarycsp.ConstraintSatisfactionProblem(dwavebinarycsp.BINARY)
 
   # Add constraint that each node (province) select a single color
+  # This code comes from https://docs.ocean.dwavesys.com/en/latest/examples/map_coloring.html
   for province in graph_list[i][0]:
     variables = [province+str(i) for i in range(colors)]
     csp.add_constraint(one_color_configurations, variables)
 
   # Add constraint that each pair of nodes with a shared edge not both select one color
+  # This code comes from https://docs.ocean.dwavesys.com/en/latest/examples/map_coloring.html
   for neighbor in graph_list[i][1]:
     v, u = neighbor
     for i in range(colors):

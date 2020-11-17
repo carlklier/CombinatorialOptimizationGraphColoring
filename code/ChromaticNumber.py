@@ -1,19 +1,11 @@
 #%%
-# This code comes from https://docs.ocean.dwavesys.com/en/latest/examples/map_coloring.html
+# Part of this code comes from https://docs.ocean.dwavesys.com/en/latest/examples/map_coloring.html
+# I wrote the code to generate the color configurations, max degree, and to calculate the chromatic number
 import dwavebinarycsp
 from dwave.system import DWaveSampler, EmbeddingComposite
 import networkx as nx
 import matplotlib.pyplot as plt
 import sys
-
-from dimod import ExactSolver
-
-# Represent the map as the nodes and edges of a graph
-#provinces = ['1', '2', '3']
-#neighbors = [('1', '2'), ('1', '3'), ('2', '3')]
-
-# provinces = ['1', '2', '3', '4']
-# neighbors = [('1', '2'), ('1', '3'), ('2', '3'), ('3', '4')]
 
 provinces = ['a', 'b', 'c', 'd']
 neighbors = [('a', 'b'), ('a', 'c'), ('b', 'c'), ('c', 'd')]

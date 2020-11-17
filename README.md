@@ -50,6 +50,7 @@ The easiest way to run the majority of the Dwave annealing code is in a juypter 
 * Must have Qiskit 0.23.1 python packages installed
   * Instruction can be obtained on qiskits site (https://qiskit.org/documentation/install.html)
 * Jupyter notebooks are not required but the vast majority of code is in notebooks so it is recommended.
+* Other packages you will need include networkx, numpy, and matplotlib. Please consult the package website on instruction for installation.
 
 ### Usage
 * The 2-coloring (2-coloring.ipynb) code is sourced from (https://hal.archives-ouvertes.fr/hal-02891847/document) so for more information please read their paper

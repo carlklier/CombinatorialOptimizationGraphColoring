@@ -48,6 +48,10 @@ The easiest way to run the majority of the Dwave annealing code is in a juypter 
 * calculateDwaveTimeComplexity.py python code to plot a graph of the qpu_access_times for 5 increasingly larger graphs to understand how time increases as the graph size increase.
 * simulatedChromaticNumber.py python file for finding the chromatic number by using a quantum simulator and plots the colorings for a graph
 
+
+* Output from the samplers looks like {'a0': 0, 'a1': 0, 'a2': 1, 'b0': 0, 'b1': 1, 'b2': 0, 'c0': 1, 'c1': 0, 'c2': 0, 'd0': 0, 'd1': 1, 'd2': 0} where the letter represent nodes and the numbers next to the letters represent the colors. The value of 1 means that color was chosen for that node. So in the output above, node a was chosen to have color 2 and only color 2, node b was chosen to have color 1 and only color 1, etc. If a node was chosen to have more than 1 color, that would go against one of our constraints and would thus have a lower energy value.  
+ 
+
 ## IBM Qiskit
 ### Prerequisites
 * Resuires python3 and pip3

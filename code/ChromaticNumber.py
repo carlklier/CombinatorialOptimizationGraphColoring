@@ -10,7 +10,6 @@ import sys
 provinces = ['a', 'b', 'c', 'd']
 neighbors = [('a', 'b'), ('a', 'c'), ('b', 'c'), ('c', 'd')]
 
-# Function for the constraint that two nodes with a shared edge not both select one color
 def not_both_1(v, u):
     return not (v and u)
 
@@ -76,7 +75,7 @@ while(chromatic_num <= max_chromatic_num):
       variables = [province+str(i) for i in range(colors)]
       csp.add_constraint(one_color_configurations, variables)
 
-  # Add constraint that each pair of nodes with a shared edge not both select one color
+  # Add constraint that each pair of nodes with a shared edge both don't have the same color
   for neighbor in neighbors:
       v, u = neighbor
       for i in range(colors):

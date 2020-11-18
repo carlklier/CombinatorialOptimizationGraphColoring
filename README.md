@@ -5,7 +5,11 @@
 
 * Nachiket Patel
 
-## Outline
+## Unique Contributions (What code we wrote vs. found)
+* CanadaGraphColoringCSP.py is the code provided by the Dwave documenation (https://docs.ocean.dwavesys.com/en/latest/examples/map_coloring.html) as an example for solving the graph coloring problem. From this, we extracted the code for the two constraints (two code loops) as well as a helper function "not_both_one" used in one of the loops. We used this code, without modification, in our other D-Wave annealing python files and notebooks as the contraints used to create the CSP for any k-coloring problem would be the same and thus used by everyone. 
+* Unique contributions to the D-Wave annealing code include: all the code to generate/plot the graphs of nodes and energy values, converting the outputs of samples to actual colors, coloring the graphs with the correct colors based on a color mapping, and the method generate_color_configurations to ensure we are able to handle any arbitray k value for a k-coloring. We wrote our own code to plot the different qpu_access_times of increasing larger graphs to better understand the time complexity in calculateDwaveTimeComplexity.py. In additon, we wrote our own code to calculate the chromatic number of a graph as seen in RealChromaticNumber.ipynb.
+* On the Qiskit side, we started off with the code for a 2-coloring (2-coloring.ipynb) which was is sourced from (https://hal.archives-ouvertes.fr/hal-02891847/document).
+* Then using the same approach as was done in the 2-coloring, we wrote our own code to create the circuit for 3 and 4 colorings which was used for the other graph coloring extensions like exploring optimization and runtime time complexity.
 
 ## D-Wave
 ### Prerequisites
